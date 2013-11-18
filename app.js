@@ -36,13 +36,36 @@ server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
+var VALID_API_KEYS = [
+  "asd8X234asfdwerknsdf1xhasdfwr234afsd123jasdfjertvxcv"
+]
+
+var openSockets = {
+
+}
+
+var validApiKey = function(apiKey) {
+  return apiKey === VALID_API_KEYS[0];
+}
+
 io.sockets.on('connection', function (socket) {
 
-  // test websocket endpoint
-  socket.on('test', function (data, fn) {
+  socket.on('configure', function(data, fn) {
+    if (validApiKey(data.apiKey)) {
+      socket.emit('configure', 'success');
 
-    console.log("data is:");
-    console.log(data);
+      if (openSockets[apiKey] === undefined) {
+        openSockets[apiKey] = []
+      }
+
+      openSockets[apiKey].push(socket);
+    } else {
+      socket.emit('configure', 'error');
+    }
+  });
+
+  socket.on('echo', function(data) {
+    socket.emit('echo back', data);
   });
 
 });
