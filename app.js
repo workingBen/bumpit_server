@@ -13,6 +13,7 @@ var app = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
+var _ = require('underscore')._;
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -45,7 +46,7 @@ var openSockets = {
 }
 
 var validApiKey = function(apiKey) {
-  return apiKey === VALID_API_KEYS[0];
+  return (_.indexOf(VALID_API_KEYS, apiKey) > 0);
 }
 
 io.sockets.on('connection', function (socket) {
